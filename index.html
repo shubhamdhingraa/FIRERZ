@@ -7,6 +7,155 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+  <script type="text/javascript">
+
+$(document).ready(function() {
+
+    var accessToken = "ba3c1f842feb4f898c399720f70fd0ac",
+      baseUrl = "https://api.api.ai/v1/",
+      $speechInput,
+      $recBtn,
+      recognition,
+      messageRecording = "Recording...",
+      messageCouldntHear = "I couldn't hear you, could you say that again?",
+      messageInternalError = "Oh no, there has been an internal server error",
+      messageSorry = "I'm sorry, I don't have the answer to that yet.";
+      var safest;
+      var latitude,longitude;
+      var intent;
+      var val;
+      var output='';
+      var output2;
+      var serviceProvider;
+      var amount;
+      var phoneNumber;
+var l='';
+var safeplace='';
+var apiAi;
+
+
+
+
+
+            $('#searchForm').on('submit',(e)=>
+            {
+
+  //    output2='';
+
+
+      //$("#spokenResponse").addClass("is-active").find(".spoken-response__text").html(output2);
+      e.preventDefault();
+            });
+
+
+
+
+
+
+       $speechInput = $("#speech");
+      $recBtn = $("#rec");
+      l=$('#speech').val();
+
+
+              $speechInput.keypress(function(event) {
+                output='';
+                $("#spokenResponse").addClass("is-active").find(".spoken-response__text").html(output2);
+                if (event.which == 13) {
+
+
+
+
+                  event.preventDefault();
+                  send();
+                }
+              });
+
+
+      $recBtn.on("click", function(event) {
+        output='';
+        $("#spokenResponse").addClass("is-active").find(".spoken-response__text").html(output2);
+        switchRecognition();
+      });
+      $(".debug__btn").on("click", function() {
+        $(this).next().toggleClass("is-active");
+        return false;
+      });
+
+
+    function startRecognition() {
+      recognition = new webkitSpeechRecognition();
+      recognition.continuous = false;
+          recognition.interimResults = false;
+
+      recognition.onstart = function(event) {
+        respond(messageRecording);
+        updateRec();
+      };
+      recognition.onresult = function(event) {
+        recognition.onend = null;
+
+        var text = "";
+          for (var i = event.resultIndex; i < event.results.length; ++i) {
+            text += event.results[i][0].transcript;
+          }
+          setInput(text);
+        stopRecognition();
+      };
+      recognition.onend = function() {
+        respond(messageCouldntHear);
+        stopRecognition();
+      };
+      recognition.lang = "en-US";
+      recognition.start();
+    }
+
+    function stopRecognition() {
+      if (recognition) {
+        recognition.stop();
+        recognition = null;
+      }
+      updateRec();
+    }
+
+    function switchRecognition() {
+      if (recognition) {
+        stopRecognition();
+      } else {
+        startRecognition();
+      }
+    }
+
+    function setInput(text) {
+      $speechInput.val(text);
+
+
+      send();
+    }
+
+    function updateRec() {
+      $recBtn.text(recognition ? "Stop" : "Speak");
+    }
+
+    function send() {
+
+
+
+
+
+      var text = $speechInput.val();
+      $.ajax({
+        type: "POST",
+        url: baseUrl + "query",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        headers: {
+          "Authorization": "Bearer " + accessToken
+        },
+        data: JSON.stringify({query: text, lang: "en", sessionId: "yaydevdiner"}),
+
+
+
 </head>
 <body>
 <style>
@@ -176,6 +325,8 @@
         <div id="footer">
           <ul class="footer">
             <li><h4>© WebApp built by <a href="http://www.iamsid.cf">Shubham Dhingra</a> and <a href="https://www.linkedin.com/in/shubham-dhingra-456592109/">Rishabh Goel.</a></h4></li>
+            <li><h4> WebApp built at <a href="#">WebItUp</a> by <a href="#">Hacker Earth.</a></h4></li>
+
 
 
           </ul>
