@@ -10,53 +10,7 @@
 <style>
 @import url(https://fonts.googleapis.com/css?family=Cabin:400);
 
-.webdesigntuts-workshop {
-	background: #151515;
-	height: 100%;
-	position: absolute;
-	text-align: center;
-	width: 100%;
-}
 
-.webdesigntuts-workshop:before,
-.webdesigntuts-workshop:after {
-	content: '';
-	display: block;
-	height: 1px;
-	left: 50%;
-	margin: 0 0 0 -400px;
-	position: absolute;
-	width: 800px;
-}
-
-.webdesigntuts-workshop:before {
-	background: #444;
-	background: -webkit-linear-gradient(left, #151515, #444, #151515);
-	background: linear-gradient(left, #151515, #444, #151515);
-	top: 0px;
-}
-
-.webdesigntuts-workshop:after {
-	background: #000;
-	background: -webkit-linear-gradient(left, #151515, #000, #151515);
-	background: linear-gradient(left, #151515, #000, #151515);
-	top: 191px;
-}
-
-.webdesigntuts-workshop form {
-	background: #111;
-	background: -webkit-linear-gradient(#1b1b1b, #111);
-	background: linear-gradient(#1b1b1b, #111);
-	border: 1px solid #000;
-	border-radius: 5px;
-	box-shadow: inset 0 0 0 1px #272727;
-	display: inline-block;
-	font-size: 0px;
-	margin: 150px auto 0;
-	padding: 20px;
-	position: relative;
-	z-index: 1;
-}
 
 .webdesigntuts-workshop input {
 	background: #222;
@@ -66,16 +20,6 @@
 	border-radius: 5px 0 0 5px;
 	box-shadow: 0 2px 0 #000;
 	color: #888;
-	display: block;
-	float: left;
-	font-family: 'Cabin', helvetica, arial, sans-serif;
-	font-size: 13px;
-	font-weight: 400;
-	height: 40px;
-	margin: 0;
-	padding: 0 10px;
-	text-shadow: 0 -1px 0 #000;
-	width: 200px;
 }
 
 .ie .webdesigntuts-workshop input {
@@ -200,15 +144,15 @@
 
 
 
-       <section class="webdesigntuts-workshop">
-         <form id="searchForm">
+       <section class="webdesigntuts-workshop" align="center">
+         <form id="searchForm" >
        <input type="text" class="form-control" id="speech" placeholder="Chat Here !"></input>
 
      </form>
             </section>
    </div>
      <div class="col-sm-2">
-     <button id="rec" class="btn btn-primary" >Speak</button>
+     <button id="rec" class="btn btn-success" >Speak</button>
 </div><div>
   <br>
   <div class="jumbotron">
