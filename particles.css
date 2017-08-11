@@ -1,0 +1,19 @@
+body{
+	margin: 0;
+}
+
+#particles-js
+{
+	background:black;
+	
+}
+#image{
+	padding: 2em;
+	position: absolute;
+}
+#firebaseui-auth-container
+{
+    padding-top:10em;
+    padding-left: 20px;
+	position: absolute;
+}
