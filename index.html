@@ -1,0 +1,1359 @@
+<html>
+<head>
+  <title>AI Web Assistant</title>
+      <link rel="icon" href="http://paybefore.com/wp-content/uploads/2016/11/Robot_icon.png" type="image/x-icon">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="https://bootswatch.com/cyborg/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+
+
+
+<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDzwbw2ThF56qAeY2-Bur5kfFRrh9nyeV0",
+    authDomain: "hack-e27b9.firebaseapp.com",
+    databaseURL: "https://hack-e27b9.firebaseio.com",
+    projectId: "hack-e27b9",
+    storageBucket: "",
+    messagingSenderId: "1008339045572"
+  };
+  firebase.initializeApp(config);
+</script>
+
+<style>
+#container1
+{
+
+align:center;
+  width:400px;
+}
+
+
+
+@import url(https://fonts.googleapis.com/css?family=Cabin:400);
+
+
+
+.webdesigntuts-workshop input {
+	background: #222;
+	background: -webkit-linear-gradient(#333, #222);
+	background: linear-gradient(#333, #222);
+	border: 1px solid #444;
+	border-radius: 5px 0 0 5px;
+	box-shadow: 0 2px 0 #000;
+	color: #888;
+}
+
+.ie .webdesigntuts-workshop input {
+	line-height: 40px;
+}
+
+.webdesigntuts-workshop input::-webkit-input-placeholder {
+   color: #888;
+}
+
+.webdesigntuts-workshop input:-moz-placeholder {
+   color: #888;
+}
+
+.webdesigntuts-workshop input:focus {
+	-webkit-animation: glow 800ms ease-out infinite alternate;
+	animation: glow 800ms ease-out infinite alternate;
+	background: #222922;
+	background: -webkit-linear-gradient(#333933, #222922);
+	background: linear-gradient(#333933, #222922);
+	border-color: #393;
+	box-shadow: 0 0 5px rgba(0,255,0,.2), inset 0 0 5px rgba(0,255,0,.1), 0 2px 0 #000;
+	color: #efe;
+	outline: none;
+}
+
+.webdesigntuts-workshop input:focus::-webkit-input-placeholder {
+	color: #efe;
+}
+
+.webdesigntuts-workshop input:focus:-moz-placeholder {
+	color: #efe;
+}
+
+.webdesigntuts-workshop button {
+	background: #222;
+	background: -webkit-linear-gradient(#333, #222);
+	background: linear-gradient(#333, #222);
+	box-sizing: border-box;
+	border: 1px solid #444;
+	border-left-color: #000;
+	border-radius: 0 5px 5px 0;
+	box-shadow: 0 2px 0 #000;
+	color: #fff;
+	display: block;
+	float: left;
+	font-family: 'Cabin', helvetica, arial, sans-serif;
+	font-size: 13px;
+	font-weight: 400;
+	height: 40px;
+	line-height: 40px;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	text-shadow: 0 -1px 0 #000;
+	width: 80px;
+}
+
+.webdesigntuts-workshop button:hover,
+.webdesigntuts-workshop button:focus {
+	background: #292929;
+	background: -webkit-linear-gradient(#393939, #292929);
+	background: linear-gradient(#393939, #292929);
+	color: #5f5;
+	outline: none;
+}
+
+.webdesigntuts-workshop button:active {
+	background: #292929;
+	background: -webkit-linear-gradient(#393939, #292929);
+	background: linear-gradient(#393939, #292929);
+	box-shadow: 0 1px 0 #000, inset 1px 0 1px #222;
+	top: 1px;
+}
+
+@-webkit-keyframes glow {
+    0% {
+		border-color: #393;
+		box-shadow: 0 0 5px rgba(0,255,0,.2), inset 0 0 5px rgba(0,255,0,.1), 0 2px 0 #000;
+    }
+    100% {
+		border-color: #6f6;
+		box-shadow: 0 0 20px rgba(0,255,0,.6), inset 0 0 10px rgba(0,255,0,.4), 0 2px 0 #000;
+    }
+}
+
+@keyframes glow {
+    0% {
+		border-color: #393;
+		box-shadow: 0 0 5px rgba(0,255,0,.2), inset 0 0 5px rgba(0,255,0,.1), 0 2px 0 #000;
+    }
+    100% {
+		border-color: #6f6;
+		box-shadow: 0 0 20px rgba(0,255,0,.6), inset 0 0 10px rgba(0,255,0,.4), 0 2px 0 #000;
+    }
+}
+
+
+</style>
+
+  <script type="text/javascript">
+
+$(document).ready(function() {
+
+    var accessToken = "ba3c1f842feb4f898c399720f70fd0ac",
+      baseUrl = "https://api.api.ai/v1/",
+      $speechInput,
+      $recBtn,
+      recognition,
+      messageRecording = "Recording...",
+      messageCouldntHear = "I couldn't hear you, could you say that again?",
+      messageInternalError = "Oh no, there has been an internal server error",
+      messageSorry = "I'm sorry, I don't have the answer to that yet.";
+      var safest;
+      var latitude,longitude;
+      var intent;
+      var val;
+      var output='';
+      var output2;
+      var serviceProvider;
+      var amount;
+      var phoneNumber;
+var l='';
+var safeplace='';
+var apiAi;
+
+
+
+
+
+            $('#searchForm').on('submit',(e)=>
+            {
+
+  //    output2='';
+
+
+      //$("#spokenResponse").addClass("is-active").find(".spoken-response__text").html(output2);
+      e.preventDefault();
+            });
+
+
+
+
+
+
+       $speechInput = $("#speech");
+      $recBtn = $("#rec");
+      l=$('#speech').val();
+
+
+              $speechInput.keypress(function(event) {
+                output='';
+                $("#spokenResponse").addClass("is-active").find(".spoken-response__text").html(output2);
+                if (event.which == 13) {
+
+
+
+
+                  event.preventDefault();
+                  send();
+                }
+              });
+
+
+      $recBtn.on("click", function(event) {
+        output='';
+        $("#spokenResponse").addClass("is-active").find(".spoken-response__text").html(output2);
+        switchRecognition();
+      });
+      $(".debug__btn").on("click", function() {
+        $(this).next().toggleClass("is-active");
+        return false;
+      });
+
+
+    function startRecognition() {
+      recognition = new webkitSpeechRecognition();
+      recognition.continuous = false;
+          recognition.interimResults = false;
+
+      recognition.onstart = function(event) {
+        respond(messageRecording);
+        updateRec();
+      };
+      recognition.onresult = function(event) {
+        recognition.onend = null;
+
+        var text = "";
+          for (var i = event.resultIndex; i < event.results.length; ++i) {
+            text += event.results[i][0].transcript;
+          }
+          setInput(text);
+        stopRecognition();
+      };
+      recognition.onend = function() {
+        respond(messageCouldntHear);
+        stopRecognition();
+      };
+      recognition.lang = "en-US";
+      recognition.start();
+    }
+
+    function stopRecognition() {
+      if (recognition) {
+        recognition.stop();
+        recognition = null;
+      }
+      updateRec();
+    }
+
+    function switchRecognition() {
+      if (recognition) {
+        stopRecognition();
+      } else {
+        startRecognition();
+      }
+    }
+
+    function setInput(text) {
+      $speechInput.val(text);
+
+
+      send();
+    }
+
+    function updateRec() {
+      $recBtn.text(recognition ? "Stop" : "Speak");
+    }
+
+    function send() {
+
+
+
+
+
+      var text = $speechInput.val();
+      $.ajax({
+        type: "POST",
+        url: baseUrl + "query",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        headers: {
+          "Authorization": "Bearer " + accessToken
+        },
+        data: JSON.stringify({query: text, lang: "en", sessionId: "yaydevdiner"}),
+
+        success: function(data) {
+          prepareResponse(data);
+          console.log("Api Ai Data starts here");
+          console.log(data);
+          console.log('Api Ai Data ends here');
+        //  console.log(data.id);
+          //console.log(data.result.parameters);
+searchForm.reset();
+var lol='';
+$('#resultsByIf').html(lol);
+intent=data.result.metadata.intentName;
+
+if(intent=='search')
+{
+var searchQuery=data.result.parameters.any;
+console.log(searchQuery);
+
+//call
+var o='';
+      var params = {
+          // Request parameters
+          "q": searchQuery,
+          "count": "10",
+          "offset": "0",
+          "mkt": "en-us",
+          "safesearch": "Moderate",
+      };
+
+      $.ajax({
+          url: "https://api.cognitive.microsoft.com/bing/v7.0/search?" + $.param(params),
+          beforeSend: function(xhrObj){
+              // Request headers
+
+xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","b3b9c6f5944a4751be7beed61b6d612f");
+              //xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","ca43a73febb6462482b13483120a7741");
+          },
+          type: "GET",
+          // Request body
+          data: "{body}",
+      })
+      .done(function(data) {
+          //alert("success");
+
+          console.log(data);
+          console.log(data.news.id);
+console.log(data.images.value[0].contentUrl);
+
+/*           o=`
+
+          <div class="row">
+             <div class="col-sm-3 col-md-6 col-lg-4" style="background-color:yellow;">
+          <img src="${data.images.value[0].contentUrl}"></img>
+             </div>
+             <div class="col-sm-3 col-md-6 col-lg-4" style="background-color:yellow;">
+          <img src=${data.images.value[1].contentUrl}</img>
+             </div>
+             <div class="col-sm-3 col-md-6 col-lg-4" style="background-color:yellow;">
+          <img src=${data.images.value[2].contentUrl}</img>
+             </div>
+             <div class="col-sm-3 col-md-6 col-lg-4" style="background-color:yellow;">
+          <img src=${data.images.value[3].contentUrl}</img>
+             </div>
+            </div>
+
+          `;
+          */
+for(var i=0;i<=5;i++){
+var o=o+`
+          <div class="col-md-2">
+          <div class="well text-center">
+
+
+          <img height="150px" width="125px" src=${data.images.value[i].contentUrl} class=".img-fluid img img-rounded">
+
+          </div>
+          </div>
+`;
+};
+
+$('#resultsByIf').html(o);
+      })
+      .fail(function(err) {
+        //  alert("error");
+          console.log(err)
+      });
+      //end
+
+
+
+
+
+
+}
+
+if(intent==='TrackFlu')
+{
+
+console.log('Track Flu Working');
+
+axios.get('http://api.flutrack.org/?s=feverANDcoughORfever&limit=50')
+.then((response)=>
+{
+
+  console.log(response);
+
+var result=response.data;
+
+var latitudesArray=[];
+var longitudesArray=[];
+var tweets='';
+for(var i=0;i<result.length;i++)
+{
+
+latitudesArray.push(result[i].latitude);
+longitudesArray.push(result[i].longitude);
+tweets=tweets+`
+<ul class="list-group">
+
+<li class="list-group-item"><h3 style="color:green">${result[i].user_name}</h3></li>
+
+<li class="list-group-item"><h4 style="color:gray">${result[i].tweet_text}</h4></li>
+</ul>
+<br>
+
+`;
+
+}
+
+/*
+for(var i=0;i<result.length;i++)
+{
+
+latitudesArray.push(result[i].geometry.location.lat);
+longitudeArray.push(result[i].geometry.location.lng);
+names.push(result[i].name);
+}
+
+*/
+var locations=[];
+
+for(var i=0;i<result.length;i++)
+{
+  locations.push(['place',latitudesArray[i],longitudesArray[i],1]);
+}
+
+
+var map = new google.maps.Map(document.getElementById('map'), {
+  zoom: 1,
+  center: new google.maps.LatLng('28.7041','77.1025'),
+  mapTypeId: google.maps.MapTypeId.ROADMAP
+});
+
+var infowindow = new google.maps.InfoWindow();
+
+var marker, i;
+
+for (i = 0; i < locations.length; i++) {
+  marker = new google.maps.Marker({
+    position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+    map: map
+  });
+
+  google.maps.event.addListener(marker, 'click', (function(marker, i) {
+    return function() {
+      infowindow.setContent(locations[i][0]);
+      infowindow.open(map, marker);
+    }
+  })(marker, i));
+};
+
+
+
+
+
+
+
+console.log(latitudesArray);
+console.log(longitudesArray);
+$('#resultsByIf').html(tweets);
+})
+
+.catch((err)=>
+{
+
+  console.log(err);
+});
+
+
+}
+
+if(intent==='rechargeTelecom')
+{
+alert('Do you really want to recharge ?');
+amount=data.result.parameters.amount;
+phoneNumber=data.result.parameters.phonenumber;
+serviceProvider=data.result.parameters.telecom;
+amount=5;
+//serviceProvider=serviceProvider.toLowerCase();
+console.log('lower '+serviceProvider);
+//serviceProvider=2;
+if(serviceProvider=='vodafone'||serviceProvider=='Vodafone')
+{
+  serviceProvider=2;
+}
+
+if(serviceProvider=='Airtel'||serviceProvider=='airtel')
+{
+  serviceProvider=1;
+}
+
+if(serviceProvider=='Idea'||serviceProvider=='idea')
+{
+serviceProvider=3;
+}
+
+
+if(serviceProvider=='Tata Indicom'||serviceProvider=='tata indicom'||serviceProvider=='tata Indicom'||serviceProvider=='tata indicom')
+{
+serviceProvider=4;
+}
+
+
+if(serviceProvider=='Tata Docomo'||serviceProvider=='tata Docomo'||serviceProvider=='Tata docomo'||serviceProvider=='tata docomo')
+{
+serviceProvider=5;
+}
+
+console.log('Amount is ' +amount);
+console.log('Phone Number is '+phoneNumber);
+console.log('Service provider is '+serviceProvider);
+
+//var idd=2;
+axios.get('https://www.pay2all.in/web-api/paynow?api_token=qrUBS0ZnubiP5MCgLUc3luj2R0lbv2wXEYdAksH6VQsfMRXrfHpSyqDYfTAX&client_id=43&number='+phoneNumber+'&amount='+amount+'&provider_id='+serviceProvider)
+.then((response)=>{
+  console.log('api called');
+    console.log(response);
+
+var message=`<h3>${response.data.message}</h3>
+<h3><div style="color:green" align="right">${response.data.status}</div></h3>`;
+
+
+$('#details1').html('');
+$('#resultsByIf').html(message);
+
+    })
+
+
+.catch((err)=>{
+  console.log(err);
+});
+
+
+
+
+}
+
+
+          if(intent==='safePlace'){
+
+            var params=data.result.parameters;
+  console.log(data.result.metadata.intentName);
+            console.log(params.geocity);
+            city=params.geocity;
+console.log('city is '+city);
+          var APIk="AIzaSyDDDjZQteROifaLcqe_s51bUgfjEQxWKIg";
+          axios.get("https://maps.googleapis.com/maps/api/geocode/json",{
+
+            params:{
+              address:city,
+              key:APIk
+            }
+
+          })
+
+          .then((response)=>{
+          console.log('GM');
+          console.log(response);
+          console.log('GM');
+
+
+ latitude=response.data.results[0].geometry.location.lat;
+longitude=response.data.results[0].geometry.location.lng;
+
+ console.log('Latitude is '+latitude);
+ console.log('Longitude is '+longitude);
+
+console.log(location);
+var co=latitude+','+longitude;
+
+//starts
+//Nearby search api
+var apiplace='AIzaSyBOYRxWCQ7rg6a2OvKPsYKlnlcXwpspcQE';
+axios.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json",{
+
+  params:{
+    location:co,
+    key:apiplace,
+    radius:5000,
+    type:'restaurant'
+  }
+
+})
+
+
+
+.then((response)=>{
+console.log('Response for Place api');
+console.log(response);
+var result=response.data.results;
+console.log(result);
+safest=0;
+var disasterRelief='';
+console.log('safest is '+safest);
+
+
+for(var i=0;i<result.length;i++)
+{
+  if(result[i].hasOwnProperty('opening_hours')){
+  if(result[i].opening_hours.open_now===true){console.log(result[i].name+' is < style="color:cyan">opened now</p> ! You can go there');
+//console.log('Address is '+result[i].vicinity);
+disasterRelief=disasterRelief+`<p>${result[i].name} is <div style="color:cyan">Opened now<br> </div>You can go there !</p><p> Address:${result[i].vicinity}</p><br>`;
+//console.log('safeplace is '+safeplace);
+}
+
+}
+  //console.log('Address is '+result[i].vicinity);
+
+
+  else {
+  console.log(console.log(result[i].name+'is not opened ! Sorry !'))
+disasterRelief=disasterRelief+`<p>${result[i].name} is not opened ! Sorry You can't go there</p><p> Address:${result[i].vicinity}</p><br>`;
+  }
+
+//result[i].opening_hours.open_now===false;
+  //console.log(result[i].vicinity);
+};
+
+$('#resultsByIf').html(disasterRelief);
+
+})
+
+.catch((err)=>
+{
+console.log(err);
+});
+
+
+//end
+})
+
+.catch((err)=>
+{
+  console.log(err);
+});
+
+};
+
+//Travel Planner starts
+
+if(intent==='whereGoing'){
+
+//  https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=rohtak&destinations=19.0759837,72.8776559&key=AIzaSyAT8Gamjcarxu1O1_Mi00oxcUko_nxHSaI
+console.log('wheregoing block');
+  var params=data.result.parameters;
+console.log(data.result.metadata.intentName);
+  console.log(params.geocity);
+  city=params.geocity;
+console.log('city is '+city);
+var APIk="AIzaSyDDDjZQteROifaLcqe_s51bUgfjEQxWKIg";
+axios.get("https://maps.googleapis.com/maps/api/geocode/json",{
+
+  params:{
+    address:city,
+    key:APIk
+  }
+
+})
+
+.then((response)=>{
+console.log('GM');
+console.log(response);
+console.log('GM');
+
+
+latitude=response.data.results[0].geometry.location.lat;
+longitude=response.data.results[0].geometry.location.lng;
+
+console.log('Latitude is '+latitude);
+console.log('Longitude is '+longitude);
+
+console.log(location);
+var co=latitude+','+longitude;
+
+//starts
+
+var apiplace='AIzaSyBOYRxWCQ7rg6a2OvKPsYKlnlcXwpspcQE';
+axios.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json",{
+
+
+
+
+params:{
+location:co,
+key:apiplace,
+radius:5000,
+type:'cafe|casino|museum|night_club|park|zoo|amusement_park|movie_theater|zoo'
+}
+
+})
+
+
+
+.then((response)=>{
+console.log('Response for Place api');
+console.log('A');
+console.log(response);
+console.log('B');
+/*
+axios.get(https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=rohtak&destinations=19.0759837,72.8776559&key=AIzaSyAT8Gamjcarxu1O1_Mi00oxcUko_nxHSaI)
+.then(()=>{
+
+})
+
+.catch(()=>{
+
+
+});
+
+*/
+var result=response.data.results;
+console.log('latitude Array');
+console.log('Longitude Array');
+
+var latitudeArray=[];
+var longitudeArray=[];
+var names=[];
+
+for(var i=0;i<result.length;i++)
+{
+
+latitudeArray.push(result[i].geometry.location.lat);
+longitudeArray.push(result[i].geometry.location.lng);
+names.push(result[i].name);
+}
+
+
+
+
+
+console.log(latitudeArray);
+console.log(longitudeArray);
+console.log(names);
+
+console.log(result);
+//safest=0;
+//console.log('safest is '+safest);
+var locationss='';
+
+for(var i=0;i<result.length;i++)
+{
+//console.log('Address is '+result[i].vicinity);
+
+//axios
+
+console.log(response.data.results[i].geometry.location.lat);
+var city='delhi';
+axios.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins='+city+'&destinations='+response.data.results[i].geometry.location.lat+','+response.data.results[i].geometry.location.lng+'&key=AIzaSyAT8Gamjcarxu1O1_Mi00oxcUko_nxHSaI')
+.then((then)=>{
+  console.log('dist1');
+console.log(response);
+console.log('dist2');
+})
+
+.catch((err)=>{
+
+
+});
+
+
+//Axios ends
+
+locationss=locationss+`<p style="color:green">${result[i].name} </p><p>Rating : ${result[i].rating} </p><p> Address:${result[i].vicinity}</p><br>`;
+//console.log('safeplace is '+safeplace);
+}
+
+
+//console.log('Address is '+result[i].vicinity);
+
+
+//MAPS API
+var locations=[];
+for(var i=0;i<result.length;i++)
+{
+
+  locations.push([names[i],latitudeArray[i],longitudeArray[i],3]);
+}
+
+
+
+
+/*
+var locations = [
+  ['Bondi Beach', -33.890542, 151.274856, 4],
+  ['Coogee Beach', -33.923036, 151.259052, 5],
+  ['Cronulla Beach', -34.028249, 151.157507, 3],
+  ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],
+  ['Maroubra Beach', -33.950198, 151.259302, 1]
+];
+*/
+var map = new google.maps.Map(document.getElementById('map'), {
+  zoom: 12,
+  center: new google.maps.LatLng(latitude,longitude),
+  mapTypeId: google.maps.MapTypeId.ROADMAP
+});
+
+var infowindow = new google.maps.InfoWindow();
+
+var marker, i;
+
+for (i = 0; i < locations.length; i++) {
+  marker = new google.maps.Marker({
+    position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+    map: map
+  });
+
+  google.maps.event.addListener(marker, 'click', (function(marker, i) {
+    return function() {
+      infowindow.setContent(locations[i][0]);
+      infowindow.open(map, marker);
+    }
+  })(marker, i));
+};
+
+
+
+
+
+//result[i].opening_hours.open_now===false;
+//console.log(result[i].vicinity);
+
+
+    $('#resultsByIf').html(locationss);
+
+})
+
+.catch((err)=>
+{
+console.log(err);
+});
+
+
+//end
+
+
+
+
+
+
+
+})
+
+.catch((err)=>
+{
+console.log(err);
+});
+
+};
+
+
+//travel planner ends;
+
+
+if(intent==='Calories')
+{
+var food=data.result.parameters.food;
+var calories=data.result.parameters.number;
+console.log(food+calories);
+
+  console.log('Calories Block');
+
+
+axios.get('https://api.nutritionix.com/v1_1/search/'+food+'?results=0%3A20&cal_min=0&cal_max='+calories+'&fields=item_name%2Cbrand_name%2Citem_id%2Cbrand_id,nf_calories&appId=717d672d&appKey=f4ac70c363624b0bad06245febfa5b33')
+
+.then((response)=>
+{
+console.log('Nutrition Api working');
+console.log(response);
+var foodies='';
+var x=response.data;
+var hungry=response.data.hits;
+ for(var i=0;i<hungry.length;i++)
+ {
+//console.log('Brand Name'+x.hits[i].fields.brand_name);
+//console.log('Item Name'+x.hits[i].fields.item_name);
+//console.log('Calories'+x.hits[i].fields.nf_calories);
+
+ foodies=foodies+`
+<h3>Brand Name : ${x.hits[i].fields.brand_name}</h3>
+<h3>Item Name : ${x.hits[i].fields.item_name}</h3>
+<h3>Calories : ${x.hits[i].fields.nf_calories}</h3>
+<br>
+
+`;
+
+
+
+
+
+
+ }
+
+$('#resultsByIf').html(foodies);
+
+
+})
+
+.catch((err)=>
+{
+
+  console.log(err);
+})
+
+}
+
+//ENVIRONMENT
+if(intent==="Environment")
+{
+
+console.log('Inside Environment Block');
+var city=data.result.parameters.geocity;
+var pollution='';
+console.log(city);
+//axios.get('http://api.airvisual.com//v2/city?city='+city+'&key=8Z8Jnpidi9qGx8qWv')
+axios.get('https://api.openaq.org/v1/latest?city='+city)
+.then((response)=>
+{
+
+  console.log(response);
+var a=[];
+var b=[];
+  var result=response.data.results;
+//var a[],b[],c[],d[],e[];
+console.log(result);
+console.log(result[0].location);
+  for(var i=0;i<3;i++)
+  {
+//console.log(results[i].location);
+
+console.log('here');
+pollution=pollution+`<h3 style="color:green"><b>${result[i].location}</b></h3>`;
+
+b.push(result[i].location);
+var measurements=result[i].measurements;
+a.push(measurements[0].value);
+console.log(a);
+console.log('b'+b);
+for(var j=0;j<measurements.length;j++)
+{
+
+pollution=pollution+`
+
+<h3>Last Updated : ${measurements[j].lastUpdated}</h3>
+<h4>Pollution Level : ${measurements[j].value}${measurements[j].unit}</h4>
+<br>
+`;
+
+
+  //console.log(measurements[j].lastUpdated);
+  //console.log(measurements[j].value+measurements[j].unit);
+}
+pollution=pollution+`<br>`;
+  }
+
+
+
+  let chart=document.getElementById('chart').getContext('2d');
+  let barchart=new Chart(chart,{
+  	type:'doughnut',
+  	data:{
+  		labels:[b[0],b[1],b[2]],
+  		datasets:[{
+  			label:'population',
+  			data:[
+  			a[0],
+        a[1],
+        a[2]
+  			],
+  			backgroundColor:['#ff6384','#36a2eb','#cc65fe','#ffce56','pink']
+  		}]
+  	},
+  	options:{
+  		cutoutPercentage:60,
+  		title:{
+  			display:true,
+  			text:'Pollution level for various Location !',
+  			fontSize:25
+  		}
+  	},
+  	layout:{
+  		padding:{
+  			left:50,
+  			right:0,
+  			bottom:0,
+  			top:0
+  		}
+  	}
+  });
+
+
+
+
+$('#resultsByIf').html(pollution);
+
+})
+
+.catch((err)=>
+{
+  console.log(err);
+})
+
+
+}
+
+
+
+//MOVIEINFO
+
+if(intent==='movieInfo')
+{
+  var movie=data.result.parameters.movie;
+var moviess='';
+console.log(movie);
+  console.log(data.result.parameters);
+
+
+
+    axios.get('https://api.themoviedb.org/3/search/movie?query='+movie+'&api_key=2e633d8e558ca65e18c9c8c93aad4207')
+    .then((response)=>{
+        console.log(response);
+        let movies=response.data.results;
+        let output='';
+        $.each(movies,(index,movie)=>{
+          moviess +=`
+          <div class="col-md-4">
+          <div class="well text-center">
+          <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" class=".img-fluid" height='350px' width="250px">
+          <h5>${movie.title}</h5>
+          <ul class="list-group">
+
+          <li class="list-group-item"><stong>Genre : </strong>${movie.overview}</li>
+          <li class="list-group-item"><stong>Released : </strong>${movie.release_date}</li>
+
+          <li class="list-group-item"><stong>Popularity : </strong>${movie.popularity}</li>
+
+          </ul>
+          <a class="btn btn-primary" target="_blank" href="https://www.themoviedb.org/search?query=${movie.title}">More Info.</a>
+
+          </div>
+          </div>
+          `;
+        });
+
+        $('#resultsByIf').html(moviess);
+    })
+
+    .catch((err)=>{
+      console.log(err);
+    });
+
+
+
+
+
+
+
+};
+
+if(intent==='newsShow')
+{
+
+console.log('Show working');
+  var url="https://newsapi.org/v1/articles";
+  axios.get(url,{
+  params:
+  {
+  source:'the-next-web',
+  sortBy:'latest',
+  apiKey:"ffa837854afd49928071ede5da9776f6"
+
+  }
+
+
+  })
+
+  .then((response)=>{
+
+  console.log(response);
+
+
+
+
+  let news=response.data.articles;
+
+  console.log('news is ');
+  console.log(news);
+
+
+/*
+  $.each(news,(index,new1)=>{
+  //  console.log(new1.urlToImage);
+
+
+
+    output2 +=`
+    <div class="col-md-4">
+    <div class="well text-center">
+    <img height="225px" width="325px" src=${new1.urlToImage} class=".img-fluid img-rounded">
+
+
+
+    <h5><stong></strong>${new1.title}</h5>
+      <ul class="list-group">
+    <li class="list-group-item"><stong>Description : </strong>${new1.description}</li>
+
+    <li class="list-group-item"><stong>Author : </strong>${new1.author}</li>
+
+
+    <li class="list-group-item"><stong>Published At : </strong>${new1.publishedAt}</li>
+    </ul>
+
+
+  <a class="btn btn-primary" href=${new1.url} target="_blank">More Info.</a>
+
+    </div>
+    </div>
+    `;
+  });
+  */
+
+var newsArray='';
+for(var i=0;i<news.length;i++)
+{
+
+console.log(news[i].title);
+
+
+
+    //safeplace +=`
+console.log('2');
+newsArray+=`
+    <div class="col-md-4">
+    <div class="well text-center">
+    <img height="225px" width="250px" src=${news[i].urlToImage} class=".img-fluid img img-rounded">
+
+
+
+    <h5><stong></strong>${news[i].title}</h5>
+      <ul class="list-group">
+    <li class="list-group-item"><stong>Description : </strong>${news[i].description}</li>
+
+    <li class="list-group-item"><stong>Author : </strong>${news[i].author}</li>
+
+
+    <li class="list-group-item"><stong>Published At : </strong>${news[i].publishedAt}</li>
+    </ul>
+
+
+  <a class="btn btn-primary" href=${news[i].url} target="_blank">More Info.</a>
+
+    </div>
+    </div>
+    `;
+  //output2=`<h4>Assistant :</h4><h2 style="color:red"> ${val}<br><br><h3 style="color:black">${safeplace}</h3><br></h2><br>`;
+  //output2=`<h4>Assistant :</h4><h2 style="color:red"> ${val}<br><br><h3 style="color:black">${safeplace}</h3><br></h2><br>`;
+
+  //output2="hahahha";
+
+    //console.log('3');
+
+}
+
+
+$("#spokenResponse").addClass("is-active").find(".spoken-response__text").html(output2);
+$('#resultsByIf').html(newsArray);
+
+
+
+  //var x='<br><hr>';
+
+    //$('#news').html(x);
+    //$('#soorce').html(x);
+
+
+    //  $('#news').html(output);
+    //  $('#details2').html(aco);
+
+
+
+  })
+
+  .catch((err)=>
+  {
+    console.log(err);
+  })
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+        },
+        error: function() {
+          respond(messageInternalError);
+        }
+      });
+    }
+
+    function prepareResponse(val) {
+      var debugJSON = JSON.stringify(val, undefined, 2),
+        spokenResponse = val.result.speech;
+
+      respond(spokenResponse);
+      debugRespond(debugJSON);
+    }
+
+    function debugRespond(val) {
+      $("#response").text(val);
+    }
+
+    function respond(val) {
+      if (val == "") {
+        val = messageSorry;
+      }
+
+      if (val !== messageRecording) {
+        var msg = new SpeechSynthesisUtterance();
+        msg.voiceURI = "native";
+        msg.text = val;
+        msg.lang = "en-US";
+        window.speechSynthesis.speak(msg);
+      }
+
+      let searchText=$('#speech').val();
+        console.log("User : "+searchText);
+
+//searchForm.reset();
+//e.preventDefault();
+  let output1=``;
+    output1=`<h4></h4><h2 style="color:green;text-align:right"> ${searchText}</h2>`;
+    let x='<p></p>';
+    $('#details1').html(output1);
+console.log('safest at last is '+safest);
+console.log('safeplace is '+safeplace);
+
+console.log('1');
+  output2=`<h4>Assistant :</h4><h2 style="color:cyan"> ${val}<br><br><h3 style="color:black">${safeplace}</h3><br></h2><br>`;
+safeplace='';
+      $("#spokenResponse").addClass("is-active").find(".spoken-response__text").html(output2);
+  }
+
+
+  });  </script>
+
+</head>
+<body>
+
+
+  <nav class="navbar navbar-default">
+    <div class="container">
+  <div class="navbar-header">
+        <a class="navbar-brand" href="index.html"><img src="http://paybefore.com/wp-content/uploads/2016/11/Robot_icon.png" height="25" width="25" </img></a>
+    <a class="navbar-brand" href="index.html">NeXllo-Web Application Assistant</a>
+
+  </div>
+  </div>
+  </nav>
+
+
+
+
+  <div class="container">
+    <div class="jumbotron">
+      <div class="row">
+
+     <h3 class="text-center">Place Query Here : </h3>
+     <div class="col-sm-10">
+
+       <section class="webdesigntuts-workshop" align="center">
+         <form id="searchForm">
+       <input type="text" class="form-control" id="speech" placeholder="Chat Here !"></input>
+
+     </form>
+   </section>
+   </div>
+     <div class="col-sm-2">
+     <button id="rec" class="btn btn-success" >Speak</button>
+</div>
+<div>
+  <br>
+  <div class="jumbotron">
+
+       <div id="details1" class="row"></div>
+     </div>
+
+
+     <div id="spokenResponse" class="spoken-response">
+       <div class="spoken-response__text"></div>
+     </div>
+
+
+     <div class="jumbotron">
+
+          <div id="resultsByIf" class="row">
+        </div>
+
+        <div id="container1" style="align:centre" >
+        <canvas id="chart"></canvas>
+      </div>
+
+        <div id="map" style="height: 400px; width: 500px;">
+        </div>
+      </div>
+
+
+
+    </div>
+
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="span12">
+        <div id="footer">
+          <ul class="footer">
+            <li><h4>© WebApp built by <a href="http://www.iamsid.cf">Shubham Dhingra</a> and <a href="https://www.linkedin.com/in/shubham-dhingra-456592109/">Rishabh Goel.</a></h4></li>
+
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <link href="https://fonts.googleapis.com/css?family=Titillium+Web:200" rel="stylesheet" type="text/css">
+</body>
+</html>
